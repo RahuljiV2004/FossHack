@@ -5,6 +5,9 @@ from modules.domain_scan import DomainScanner
 from modules.nmap_scan import NmapScanner
 from modules.traffic_scan import TrafficScanner
 from modules.vuln_scan import VulnerabilityScanner
+from modules.owasp_zap_scan import OWASPZAPScanner
+from modules.headers_scan import HeadersScanner
+from modules.sitadel_scan import SitadelScanner  # Add this line
 import concurrent.futures
 import logging
 import os
@@ -13,10 +16,10 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__, static_folder="../frontend")
-CORS(app)  # Enable CORS for all routes
+app = Flask(__name__, static_folder="../frontend")  # Set static folder to frontend
+CORS(app)
 
-# Serve the frontend HTML file
+# Serve the frontend index.html file
 @app.route('/')
 def serve_frontend():
     return send_from_directory(app.static_folder, 'index.html')
@@ -37,7 +40,10 @@ def scan():
             'domain': DomainScanner(),
             'nmap': NmapScanner(),
             'traffic': TrafficScanner(),
-            'vuln': VulnerabilityScanner()
+            'vuln': VulnerabilityScanner(),
+            'owasp_zap': OWASPZAPScanner(),
+            'headers': HeadersScanner(),
+            'sitadel': SitadelScanner()  # Add this line
         }
         
         # Use ThreadPoolExecutor to run scans concurrently
@@ -46,7 +52,10 @@ def scan():
                 executor.submit(scanners['dns'].scan, domain): 'dns',
                 executor.submit(scanners['domain'].scan, domain): 'domain',
                 executor.submit(scanners['nmap'].scan, domain): 'nmap',
-                executor.submit(scanners['traffic'].scan, domain): 'traffic'
+                executor.submit(scanners['traffic'].scan, domain): 'traffic',
+                executor.submit(scanners['owasp_zap'].scan, f"http://{domain}"): 'owasp_zap',
+                executor.submit(scanners['headers'].scan, domain): 'headers',
+                executor.submit(scanners['sitadel'].scan, domain): 'sitadel'  # Add this line
             }
             
             results = {}

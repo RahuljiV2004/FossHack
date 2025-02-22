@@ -1,4 +1,5 @@
 import subprocess
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,10 +22,10 @@ class VulnerabilityScanner:
                 if vuln_info:
                     vulnerabilities.extend(vuln_info)
             
-            # Run Metasploit scan if applicable
-            msf_vulns = self._run_metasploit_scan(domain, port_scan_results)
-            if msf_vulns:
-                vulnerabilities.extend(msf_vulns)
+            # Run a basic HTTP header check for vulnerabilities
+            http_vulns = self._check_http_headers(domain)
+            if http_vulns:
+                vulnerabilities.extend(http_vulns)
                 
         except Exception as e:
             logger.error(f"Vulnerability scan error for {domain}: {e}")
@@ -41,55 +42,65 @@ class VulnerabilityScanner:
     def _check_service_vulnerabilities(self, domain, port, service_name, product, version):
         vulns = []
         
-        # Example vulnerability checks
+        # Check for unencrypted HTTP traffic
         if service_name == 'http' and port == 80:
             vulns.append({
                 'title': 'Unencrypted HTTP',
-                'risk_level': 'Medium',
-                'description': 'Website is using unencrypted HTTP protocol',
-                'exploitation': 'Vulnerable to man-in-the-middle attacks',
-                'mitigation': 'Implement HTTPS with valid SSL/TLS certificate'
+                'risk_level': 'High',  # Changed risk level to High
+                'description': 'Website is using unencrypted HTTP protocol, which is insecure.',
+                'exploitation': 'Vulnerable to man-in-the-middle attacks, data interception, and tampering.',
+                'mitigation': 'Implement HTTPS with a valid SSL/TLS certificate to encrypt traffic.'
             })
             
+        # Check for vulnerable versions of software
         if product and version:
-            # Check against known vulnerability database
             if self._is_vulnerable_version(product, version):
                 vulns.append({
                     'title': f'Vulnerable {product} version',
                     'risk_level': 'High',
-                    'description': f'Running vulnerable version {version}',
-                    'exploitation': 'Multiple known exploits available',
-                    'mitigation': 'Upgrade to latest version'
+                    'description': f'Running vulnerable version {version} of {product}.',
+                    'exploitation': 'Multiple known exploits available for this version.',
+                    'mitigation': 'Upgrade to the latest version of the software.'
                 })
                 
         return vulns
     
-    def _is_vulnerable_version(self, product, version):
-        # Placeholder for version vulnerability check
-        return False
-    
-    def _run_metasploit_scan(self, domain, port_scan_results):
+    def _check_http_headers(self, domain):
         vulns = []
+        
         try:
-            # Example Metasploit automation
-            cmd = f"""msfconsole -q -x '
-            use auxiliary/scanner/http/http_version;
-            set RHOSTS {domain};
-            run;
-            exit'"""
+            # Example: Check for missing security headers
+            headers = self._get_http_headers(domain)
             
-            output = subprocess.check_output(cmd, shell=True, text=True)
-            
-            # Parse Metasploit output
-            if 'vulnerable' in output.lower():
+            if 'X-Frame-Options' not in headers:
                 vulns.append({
-                    'title': 'Metasploit Detected Vulnerability',
-                    'risk_level': 'High',
-                    'description': 'A vulnerability was detected using Metasploit',
-                    'exploitation': 'Refer to Metasploit documentation',
-                    'mitigation': 'Apply patches or updates'
+                    'title': 'Missing X-Frame-Options Header',
+                    'risk_level': 'Medium',
+                    'description': 'The X-Frame-Options header is missing, making the site vulnerable to clickjacking attacks.',
+                    'exploitation': 'Clickjacking',
+                    'mitigation': 'Add X-Frame-Options header with DENY or SAMEORIGIN'
                 })
+            
+            if 'Content-Security-Policy' not in headers:
+                vulns.append({
+                    'title': 'Missing Content-Security-Policy Header',
+                    'risk_level': 'High',
+                    'description': 'The Content-Security-Policy header is missing, making the site vulnerable to XSS attacks.',
+                    'exploitation': 'Cross-Site Scripting (XSS)',
+                    'mitigation': 'Add Content-Security-Policy header'
+                })
+                
         except Exception as e:
-            logger.error(f"Metasploit scan error for {domain}: {e}")
+            logger.error(f"HTTP header check error for {domain}: {e}")
         
         return vulns
+    
+    def _get_http_headers(self, domain):
+        import requests
+        response = requests.get(f"http://{domain}")
+        return response.headers
+    
+    def _is_vulnerable_version(self, product, version):
+        # Placeholder for version vulnerability check
+        # You can integrate with a vulnerability database like CVE or NVD
+        return False

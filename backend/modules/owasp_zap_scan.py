@@ -3,15 +3,16 @@ import json
 import logging
 import time
 import os
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 class OWASPZAPScanner:
     def __init__(self):
-        self.zap_path = "/Applications/ZAP.app/Contents/Java/zap.sh"  # Path to zap.sh
-        self.report_dir = "/tmp/zap_reports"
+        # Use a dynamic path for ZAP
+        self.zap_path = str(Path(__file__).resolve().parent.parent / "ZAP" / "zap.sh")
+        self.report_dir = str(Path(__file__).resolve().parent.parent / "tmp" / "zap_reports")
         self.api_key = "your_api_key"  # Replace with your ZAP API key
-        self.zap_home = "/tmp/zap_home"  # Custom home directory for ZAP
 
     def scan(self, target_url):
         results = {
@@ -20,13 +21,12 @@ class OWASPZAPScanner:
         }
 
         try:
-            # Create report and home directories
+            # Create report directory
             os.makedirs(self.report_dir, exist_ok=True)
-            os.makedirs(self.zap_home, exist_ok=True)
 
-            # Start ZAP in daemon mode with a custom home directory
+            # Start ZAP in daemon mode
             zap_process = subprocess.Popen(
-                [self.zap_path, "-daemon", "-config", f"api.key={self.api_key}", "-dir", self.zap_home],
+                [self.zap_path, "-daemon", "-config", f"api.key={self.api_key}"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
 
@@ -39,8 +39,7 @@ class OWASPZAPScanner:
                 "-quickurl", target_url,
                 "-quickprogress",
                 "-quickout", f"{self.report_dir}/zap_report.json",
-                "-config", f"api.key={self.api_key}",
-                "-dir", self.zap_home
+                "-config", f"api.key={self.api_key}"
             ]
             subprocess.run(scan_command, check=True)
 
