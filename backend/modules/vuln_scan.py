@@ -1,5 +1,4 @@
-import subprocess
-import json
+import requests
 import logging
 
 logger = logging.getLogger(__name__)
@@ -42,16 +41,6 @@ class VulnerabilityScanner:
     def _check_service_vulnerabilities(self, domain, port, service_name, product, version):
         vulns = []
         
-        # Check for unencrypted HTTP traffic
-        if service_name == 'http' and port == 80:
-            vulns.append({
-                'title': 'Unencrypted HTTP',
-                'risk_level': 'High',  # Changed risk level to High
-                'description': 'Website is using unencrypted HTTP protocol, which is insecure.',
-                'exploitation': 'Vulnerable to man-in-the-middle attacks, data interception, and tampering.',
-                'mitigation': 'Implement HTTPS with a valid SSL/TLS certificate to encrypt traffic.'
-            })
-            
         # Check for vulnerable versions of software
         if product and version:
             if self._is_vulnerable_version(product, version):
@@ -96,7 +85,6 @@ class VulnerabilityScanner:
         return vulns
     
     def _get_http_headers(self, domain):
-        import requests
         response = requests.get(f"http://{domain}")
         return response.headers
     

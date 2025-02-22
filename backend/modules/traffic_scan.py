@@ -1,3 +1,6 @@
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)  # Suppress Scapy warnings
+
 from scapy.all import *
 import time
 import logging
