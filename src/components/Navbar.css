@@ -1,0 +1,42 @@
+.custom-navbar {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px 20px;
+    margin-bottom: 100px;
+  }
+  
+  .brand-logo {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+  
+  .brand-logo:hover {
+    color: #ffeb3b;
+  }
+  
+  .nav-link-custom {
+    color: #fff !important;
+    transition: color 0.3s ease;
+    font-size: 1.1rem;
+  }
+  
+  .nav-link-custom:hover {
+    color: #ffeb3b !important;
+    text-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+  }
+  
+  .navbar-collapse {
+    justify-content: flex-end;
+  }
+  
+  .navbar-toggler {
+    border: none;
+  }
+  
+  /* .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%280, 0, 0, 0.5%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  } */
+  

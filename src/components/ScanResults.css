@@ -1,0 +1,149 @@
+
+/* .scan-results-section {
+  padding: 20px;
+  background: black;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results-table {
+  margin-bottom: 20px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #f9f7f7;
+}
+
+.result-key {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.result-value {
+  color: #ffffff;
+  white-space: pre-wrap;
+}
+
+.traffic-graph {
+  padding: 20px;
+  background-color: #0a0101;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+} */
+.scan-results-section {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.scan-results-section h2 {
+  color: #42e094;
+  font-size: 28px;
+  margin-bottom: 20px;
+
+  letter-spacing: 2px;
+}
+
+/* .results-table {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.result-row {
+  background: #48bb72;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.result-row:hover {
+  transform: translateY(-5px);
+}
+
+.result-key {
+  color: #000000;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.result-value {
+  color: #000000;
+  word-break: break-word;
+} */
+.results-table {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+strong{
+  color: #45e999;
+}
+.result-row {
+  background: #000000;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  height: 150px;  /* Fixed height */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .result-row:hover {
+  transform: translateY(-5px);
+} */
+
+.result-value {
+  color: #109554;
+  overflow-y: auto;
+  flex-grow: 1;
+  max-height: 100%;
+  padding-right: 10px;  /* Optional: to avoid scrollbar overlap */
+}
+
+
+.nested-object {
+  background: #212323;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.traffic-graph {
+  margin-top: 30px;
+  padding: 20px;
+  background: #020d47;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.traffic-graph h3 {
+  color: #ffffff;
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+.download-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: #0056b3;
+}
+
